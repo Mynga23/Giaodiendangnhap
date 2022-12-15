@@ -5,13 +5,10 @@ import {COLORS} from '../controller/APIs/Constants';
 const Home = () => {
   const [value, setValue] = useState(0);
   const [checkButton, setCheckButton] = useState(true);
-
-  
   const tangValue = () => {
     setCheckButton(true);
     setValue(value + 1);
   };
-
   const giamValue = () => {
     setCheckButton(true);
     setValue(value - 1);

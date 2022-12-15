@@ -7,13 +7,16 @@ import {
   Alert,
   View,
 } from 'react-native';
-import { useState } from 'react';
+import {useState} from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 
-import {ICONS, COLORS} from '../controller/APIs/Constants';
+import React from 'react';
 
-const Signin = () => {
+import {ICONS, COLORS} from '../controller/APIs/Constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const Signin = ({navigation}) => {
   const initUser = {
     email: '',
     password: '',
@@ -30,110 +33,112 @@ const Signin = () => {
   });
 
   const login = values => {
-    Alert.alert('Hello', values?.email + ':)');
+    if (values?.email === 'admin@gmail.com' && values?.password === '123456') {
+      AsyncStorage.setItem('@Info_User', values);
+      navigation.navigate('Home');
+    } else {
+      Alert.alert('Mật khẩu hoặc tài khoản không đúng !');
+    }
   };
 
   return (
     <View style={styles.ColorBgr}>
-    <View style={styles.container}>
-      <Formik
-        initialValues={initUser}
-        validationSchema={validationSchema}
-        onSubmit={values => {
-          console.log('🚀 ~ file: App.js ~ line 55 ~ App ~ values', values);
-          login(values);
-        }}>
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-        }) => {
-          const {email, password} = values;
-          return (
-            
-              
-                <View style={styles.form}>
-                  <View>
-                    <Text style={styles.text1}>XIN MỜI ĐĂNG NHẬP</Text>
-                  </View>
-                  <Image
-                    style={styles.tinyLogo}
-                    source={ICONS.avatar}
-                  ></Image>
-                  <View style={styles.formcontrol}>
-                    <Text type="email" name="email" style={styles.label}>
-                      Email
-                    </Text>
-                    <TextInput
-                      value={email}
-                      onChangeText={handleChange('email')}
-                      onBlur={handleBlur('email')}
-                      style={styles.input}
-                    />
-                    {errors.email && touched.email ? (
-                      <Text style={{color: 'red'}}>{errors.email}</Text>
-                    ) : null}
-                  </View>
-                  <View style={styles.formcontrol}>
-                    <Text type="password" name="password" style={styles.label}>
-                      Password
-                    </Text>
-                    <TextInput
-                      value={password}
-                      onChangeText={handleChange('password')}
-                      onBlur={handleBlur('password')}
-                      secureTextEntry={true}
-                      style={styles.input}
-                    />
-                    {errors.password && touched.password ? (
-                      <Text style={{color: 'red'}}>{errors.password}</Text>
-                    ) : null}
-                  </View>
-                  <TouchableOpacity
-                    type="submit"
-                    style={styles.button}
-                    onPress={handleSubmit}>
-                    <Text style={styles.textbutton}>Đăng nhập</Text>
-                  </TouchableOpacity>
-                  <View style={styles.containerimage}>
-                    <Image
-                      style={styles.contentimage}
-                      source={{
-                        uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Facebook_f_logo_%282019%29.svg/2048px-Facebook_f_logo_%282019%29.svg.png',
-                      }}></Image>
-                    <Image
-                      style={styles.contentimage}
-                      source={{
-                        uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Facebook_f_logo_%282019%29.svg/2048px-Facebook_f_logo_%282019%29.svg.png',
-                      }}></Image>
-                    <Image
-                      style={styles.contentimage}
-                      source={{
-                        uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Facebook_f_logo_%282019%29.svg/2048px-Facebook_f_logo_%282019%29.svg.png',
-                      }}></Image>
-                  </View>
-                  
+      <View style={styles.container}>
+        <Formik
+          initialValues={initUser}
+          validationSchema={validationSchema}
+          onSubmit={values => {
+            console.log('🚀 ~ file: App.js ~ line 55 ~ App ~ values', values);
+            login(values);
+          }}>
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+          }) => {
+            const {email, password} = values;
+            return (
+              <View style={styles.form}>
+                <View>
+                  <Text style={styles.text1}>XIN MỜI ĐĂNG NHẬP</Text>
                 </View>
-          );
-        }}
-      </Formik>
+                <Image style={styles.tinyLogo} source={ICONS.avatar} />
+                <View style={styles.formcontrol}>
+                  <Text type="email" name="email" style={styles.label}>
+                    Email
+                  </Text>
+                  <TextInput
+                    value={email}
+                    onChangeText={handleChange('email')}
+                    onBlur={handleBlur('email')}
+                    style={styles.input}
+                  />
+                  {errors.email && touched.email ? (
+                    <Text style={{color: 'red'}}>{errors.email}</Text>
+                  ) : null}
+                </View>
+                <View style={styles.formcontrol}>
+                  <Text type="password" name="password" style={styles.label}>
+                    Password
+                  </Text>
+                  <TextInput
+                    value={password}
+                    onChangeText={handleChange('password')}
+                    onBlur={handleBlur('password')}
+                    secureTextEntry={true}
+                    style={styles.input}
+                  />
+                  {errors.password && touched.password ? (
+                    <Text style={{color: 'red'}}>{errors.password}</Text>
+                  ) : null}
+                </View>
+                <TouchableOpacity
+                  type="submit"
+                  style={styles.button}
+                  onPress={handleSubmit}>
+                  <Text style={styles.textbutton}>Đăng nhập</Text>
+                </TouchableOpacity>
+                <View style={styles.containerimage}>
+                  <Image
+                    style={styles.contentimage}
+                    source={{
+                      uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Facebook_f_logo_%282019%29.svg/2048px-Facebook_f_logo_%282019%29.svg.png',
+                    }}
+                  />
+                  <Image
+                    style={styles.contentimage}
+                    source={{
+                      uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Facebook_f_logo_%282019%29.svg/2048px-Facebook_f_logo_%282019%29.svg.png',
+                    }}
+                  />
+                  <Image
+                    style={styles.contentimage}
+                    source={{
+                      uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Facebook_f_logo_%282019%29.svg/2048px-Facebook_f_logo_%282019%29.svg.png',
+                    }}
+                  />
+                </View>
+              </View>
+            );
+          }}
+        </Formik>
       </View>
       <View>
         <Text style={styles.texttext}>Quên mật khẩu</Text>
       </View>
-      <View style= {styles.request}>
+      <View style={styles.request}>
         <Text style={styles.texttk}> Bạn chưa có tài khoản ? </Text>
         <TouchableOpacity type="submit" style={styles.button1}>
           <Text style={styles.textbutton1}>Đăng ký</Text>
         </TouchableOpacity>
-       </View>
+      </View>
     </View>
   );
 };
-export default HomeScreen;
+export default Signin;
 
 const styles = StyleSheet.create({
   ColorBgr: {
@@ -167,17 +172,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   texttext: {
-        fontSize: 15,
-        marginLeft: 150,
-        marginTop: 20,
-        color: 'black',
-        justifyContent: 'center',
-      },
+    fontSize: 15,
+    marginLeft: 150,
+    marginTop: 20,
+    color: 'black',
+    justifyContent: 'center',
+  },
   label: {color: 'black', fontSize: 15, marginLeft: 10},
   text: {color: 'black', fontSize: 20},
   textbutton: {color: 'white', fontSize: 20},
-    textbutton1: {color: 'white', fontSize: 15},
-    texttk: {color: 'black', fontSize: 15, marginTop: 20, marginLeft: 30},
+  textbutton1: {color: 'white', fontSize: 15},
+  texttk: {color: 'black', fontSize: 15, marginTop: 20, marginLeft: 30},
   input: {
     width: '90%',
     paddingHorizontal: 2,
