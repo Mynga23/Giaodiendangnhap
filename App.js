@@ -1,20 +1,15 @@
-
-
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import Signin from './app/screens/Signin'
-import Home from './app/screens/Home'
+import {StyleSheet, Text, View} from 'react-native';
+import React from 'react';
+import Authentication from './app/authentication/authentication';
 
 const App = () => {
   return (
-    <View>
-      {/* <Signin/> */}
-      <Home/>
-    
-    </View>
-  )
-}
+    <>
+      <Authentication />
+    </>
+  );
+};
 
-export default App
+export default App;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

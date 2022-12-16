@@ -10,45 +10,65 @@ import {
 import {useState} from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import React from 'react';
 
 import {ICONS, COLORS} from '../controller/APIs/Constants';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+import {AsyncStorage} from 'react-native';
+const AddContact = ({route, navigation}) => {
+  const {handleAdd} = route.params;
 
-const Signin = ({navigation}) => {
   const initUser = {
+    name: '',
+    phone: '',
     email: '',
-    password: '',
+    address: '',
+    avatar: '',
   };
 
   const validationSchema = Yup.object({
+    name: Yup.string()
+      .min(3, 'Tên quá ngắn')
+      .max(20, 'Tên qúa dài')
+      .required('Tên không được để trống'),
+    phone: Yup.string()
+      .min(9, 'Số điện thoại quá ngắn')
+      .max(13, 'Số điện thoại  qúa dài')
+      .required('Số điện thoại không được để trống'),
     email: Yup.string()
       .email('Email không đúng định dạng')
       .required('Yêu cầu nhập email'),
-    password: Yup.string()
-      .min(6, 'Mật khẩu quá ngắn')
-      .max(20, 'Mật khẩu qúa dài')
-      .required('Mật khẩu không được để trống'),
+    address: Yup.string()
+      .min(6, 'Địa chỉ quá ngắn')
+      .max(20, 'Địa chỉ qúa dài')
+      .required('Địa chỉ  không được để trống'),
+    avatar: Yup.string()
+      // .matches(/((https?):\/\/)+&?)?$/, 'Đây không phải là  một url ảnh!')
+      .required('Haỹ dán một url ảnh'),
   });
 
-  const login = async values => {
-    if (values?.email === 'admin@gmail.com' && values?.password === '123456') {
-         navigation.navigate('Home');
-      await AsyncStorage.setItem('@Info_User', values);
-   
-    } else {
-      Alert.alert('Mật khẩu hoặc tài khoản không đúng !');
-    }
+  const addContact = value => {
+    const newContact = {
+      id: Date.now(),
+      name: value.name,
+      phone: value.phone,
+      email: value.email,
+      address: value.address,
+      avatar: value.avatar,
+    };
+    handleAdd(newContact);
+    navigation.pop();
   };
 
   return (
-    <View style={styles.ColorBgr}>
-      <View style={styles.container}>
+    <View>
+      <View>
         <Formik
           initialValues={initUser}
           validationSchema={validationSchema}
           onSubmit={values => {
-            login(values);
+            addContact(values);
           }}>
           {({
             values,
@@ -58,13 +78,43 @@ const Signin = ({navigation}) => {
             handleBlur,
             handleSubmit,
           }) => {
-            const {email, password} = values;
+            const {name, phone, email, address, avatar} = values;
             return (
               <View style={styles.form}>
                 <View>
-                  <Text style={styles.text1}>XIN MỜI ĐĂNG NHẬP</Text>
+                  <Text style={styles.text1}>Thêm mới liên hệ</Text>
                 </View>
-                <Image style={styles.tinyLogo} source={ICONS.avatar} />
+
+                <View style={styles.formcontrol}>
+                  <Text name="name" style={styles.label}>
+                    Tên
+                  </Text>
+                  <TextInput
+                    value={name}
+                    onChangeText={handleChange('name')}
+                    onBlur={handleBlur('name')}
+                    style={styles.input}
+                  />
+                  {errors.name && touched.name ? (
+                    <Text style={{color: 'red'}}>{errors.name}</Text>
+                  ) : null}
+                </View>
+                <View style={styles.formcontrol}>
+                  <Text type="phone" name="phone" style={styles.label}>
+                    Số điện thoại
+                  </Text>
+                  <TextInput
+                    value={phone}
+                    onChangeText={handleChange('phone')}
+                    onBlur={handleBlur('phone')}
+                    style={styles.input}
+                    keyboardType="phone-pad"
+                  />
+                  {errors.phone && touched.phone ? (
+                    <Text style={{color: 'red'}}>{errors.phone}</Text>
+                  ) : null}
+                </View>
+
                 <View style={styles.formcontrol}>
                   <Text type="email" name="email" style={styles.label}>
                     Email
@@ -79,65 +129,52 @@ const Signin = ({navigation}) => {
                     <Text style={{color: 'red'}}>{errors.email}</Text>
                   ) : null}
                 </View>
+
                 <View style={styles.formcontrol}>
-                  <Text type="password" name="password" style={styles.label}>
-                    Password
+                  <Text type="address" name="address" style={styles.label}>
+                    Địa chỉ
                   </Text>
                   <TextInput
-                    value={password}
-                    onChangeText={handleChange('password')}
-                    onBlur={handleBlur('password')}
-                    secureTextEntry={true}
+                    value={address}
+                    onChangeText={handleChange('address')}
+                    onBlur={handleBlur('address')}
                     style={styles.input}
                   />
-                  {errors.password && touched.password ? (
-                    <Text style={{color: 'red'}}>{errors.password}</Text>
+                  {errors.address && touched.address ? (
+                    <Text style={{color: 'red'}}>{errors.address}</Text>
                   ) : null}
                 </View>
+
+                <View style={styles.formcontrol}>
+                  <Text type="avatar" name="avatar" style={styles.label}>
+                    Hình ảnh url
+                  </Text>
+                  <TextInput
+                    value={avatar}
+                    onChangeText={handleChange('avatar')}
+                    onBlur={handleBlur('avatar')}
+                    style={styles.input}
+                  />
+                  {errors.avatar && touched.avatar ? (
+                    <Text style={{color: 'red'}}>{errors.avatar}</Text>
+                  ) : null}
+                </View>
+
                 <TouchableOpacity
                   type="submit"
                   style={styles.button}
                   onPress={handleSubmit}>
-                  <Text style={styles.textbutton}>Đăng nhập</Text>
+                  <Text style={styles.textbutton}>Lưu Lại</Text>
                 </TouchableOpacity>
-                <View style={styles.containerimage}>
-                  <Image
-                    style={styles.contentimage}
-                    source={{
-                      uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Facebook_f_logo_%282019%29.svg/2048px-Facebook_f_logo_%282019%29.svg.png',
-                    }}
-                  />
-                  <Image
-                    style={styles.contentimage}
-                    source={{
-                      uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Facebook_f_logo_%282019%29.svg/2048px-Facebook_f_logo_%282019%29.svg.png',
-                    }}
-                  />
-                  <Image
-                    style={styles.contentimage}
-                    source={{
-                      uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Facebook_f_logo_%282019%29.svg/2048px-Facebook_f_logo_%282019%29.svg.png',
-                    }}
-                  />
-                </View>
               </View>
             );
           }}
         </Formik>
       </View>
-      <View>
-        <Text style={styles.texttext}>Quên mật khẩu</Text>
-      </View>
-      <View style={styles.request}>
-        <Text style={styles.texttk}> Bạn chưa có tài khoản ? </Text>
-        <TouchableOpacity type="submit" style={styles.button1}>
-          <Text style={styles.textbutton1}>Đăng ký</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };
-export default Signin;
+export default AddContact;
 
 const styles = StyleSheet.create({
   ColorBgr: {
