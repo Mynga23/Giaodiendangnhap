@@ -9,6 +9,7 @@ import Home from '../screens/Home';
 import ContactDetail from '../screens/ContactDetail';
 import Signin from '../screens/Signin';
 import AddContact from '../screens/AddContact';
+import Profile from '../screens/Profile';
 
 const Stack = createStackNavigator(); //stack
 const BottomTab = createBottomTabNavigator(); //Navigation BOTTOM_BAR
@@ -36,8 +37,8 @@ const SignedBottomTab = () => {
         }}
       />
       <BottomTab.Screen
-        name="ContactDetail"
-        component={ContactDetail}
+        name="Profile"
+        component={Profile}
         options={{
           tabBarIcon: ({focused}) => (
             <MaterialCommunityIcons
@@ -68,6 +69,11 @@ export const NavigationNotSign = () => {
           component={SignedBottomTab}
           options={{headerShown: false}}
         />
+        <Stack.Screen
+          name="ContactDetail"
+          component={ContactDetail}
+          options={{headerShown: true}}
+        />
         <Stack.Screen name="AddContact" component={AddContact} />
       </Stack.Navigator>
     </NavigationContainer>
@@ -88,6 +94,7 @@ export const NavigationSigned = () => {
           component={ContactDetail}
           options={{headerShown: false}}
         />
+        <Stack.Screen name="ContactDetail" component={ContactDetail} />
         <Stack.Screen
           name="AddContact"
           component={AddContact}

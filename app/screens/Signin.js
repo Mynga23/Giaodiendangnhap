@@ -10,12 +10,11 @@ import {
 import {useState} from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
 
 import {ICONS, COLORS} from '../controller/APIs/Constants';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-import {AsyncStorage} from 'react-native';
+
 const Signin = ({navigation}) => {
   const initUser = {
     email: '',
@@ -32,14 +31,14 @@ const Signin = ({navigation}) => {
       .required('Mật khẩu không được để trống'),
   });
 
-  const login = values => {
-       navigation.navigate('Home');
-    // if (values?.email === 'admin@gmail.com' && values?.password === '123456') {
-    //   AsyncStorage.setItem('@Info_User', values);
+  const login = async values => {
+    if (values?.email === 'admin@gmail.com' && values?.password === '123456') {
+         navigation.navigate('Home');
+      await AsyncStorage.setItem('@Info_User', values);
    
-    // } else {
-    //   Alert.alert('Mật khẩu hoặc tài khoản không đúng !');
-    // }
+    } else {
+      Alert.alert('Mật khẩu hoặc tài khoản không đúng !');
+    }
   };
 
   return (
@@ -49,7 +48,6 @@ const Signin = ({navigation}) => {
           initialValues={initUser}
           validationSchema={validationSchema}
           onSubmit={values => {
-            console.log('🚀 ~ file: App.js ~ line 55 ~ App ~ values', values);
             login(values);
           }}>
           {({

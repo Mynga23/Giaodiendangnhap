@@ -105,18 +105,22 @@ const defaultData = [
 const Home = ({navigation}) => {
   const [items, setItems] = useState(defaultData || []);
 
+  const [itemSearch, setItemSearch] = useState([]);
+
   const renderItem = ({item}) => <ItemContact item={item} />;
 
-  const onChangeText = text => {
+  const onChangeSearch = text => {
     if (text?.trim() && text.length >= 2) {
-      setItems(
+      setItemSearch(
         items.filter(item =>
           item?.name?.toLowerCase().includes(text?.trim().toLowerCase()),
         ),
       );
-    } else {
-      setItems(defaultData);
     }
+  };
+
+  const onClearSearch = () => {
+    setItemSearch([]);
   };
 
   const handleAdd = newContact => {
@@ -135,9 +139,35 @@ const Home = ({navigation}) => {
     );
   };
 
+  const handleUpdate = (id, newContact) => {
+    setItems(
+      items.map(contact => {
+        if (contact.id === id) {
+          contact = newContact;
+        }
+        return contact;
+      }),
+    );
+  };
+
   const ItemContact = ({item}) => {
     return (
-      <TouchableOpacity style={styles.itemContainer} key={item?.id}>
+      <TouchableOpacity
+        style={styles.itemContainer}
+        key={item?.id}
+        onPress={() =>
+          navigation.navigate('ContactDetail', {
+            contact: {
+              idContact: item?.id,
+              nameContact: item?.name,
+              phoneContact: item?.phone,
+              emailContact: item?.email,
+              addressContact: item?.address,
+              avatarContact: item?.avatar,
+            },
+            handleUpdate: handleUpdate,
+          })
+        }>
         <View style={{marginRight: 30, alignItems: 'center', flex: 2}}>
           <Image source={{uri: item?.avatar}} style={styles.avatar} />
           <Text>{item?.name}</Text>
@@ -176,14 +206,33 @@ const Home = ({navigation}) => {
           <TextInput
             placeholder="Tìm kiếm liên hệ"
             style={styles.headerTextInput}
-            onChangeText={onChangeText}
+            onChangeText={onChangeSearch}
           />
-          <TouchableOpacity style={styles.buttonSearch}>
-            <Text style={styles.searchText}>Tìm Kiếm</Text>
+          <TouchableOpacity style={styles.buttonSearch} onPress={onClearSearch}>
+            <Text style={styles.searchText}>Clear</Text>
           </TouchableOpacity>
         </View>
       </View>
       <View style={styles.body}>
+        {itemSearch.length>0 && (
+          <View style={{height: 100, borderBottomWidth: 2}}>
+            <FlatList
+              data={itemSearch || []}
+              renderItem={renderItem}
+              ListEmptyComponent={() => (
+                <View
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: 50,
+                  }}>
+                  <Text style={styles.searchText}>Không có thông tin</Text>
+                </View>
+              )}
+            />
+          </View>
+        )}
+
         <FlatList
           data={items || []}
           renderItem={renderItem}
