@@ -8,13 +8,18 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Home from '../screens/Home';
 import ContactDetail from '../screens/ContactDetail';
 import Signin from '../screens/Signin';
+import AddContact from '../screens/AddContact';
 
 const Stack = createStackNavigator(); //stack
 const BottomTab = createBottomTabNavigator(); //Navigation BOTTOM_BAR
 
 const SignedBottomTab = () => {
   return (
-    <BottomTab.Navigator initialRouteName="Home">
+    <BottomTab.Navigator
+      initialRouteName="Home"
+      tabBarOptions={{
+        keyboardHidesTabBar: true, // ẩn bottom tab khi mở key board
+      }}>
       <BottomTab.Screen
         name="Home"
         component={Home}
@@ -63,6 +68,7 @@ export const NavigationNotSign = () => {
           component={SignedBottomTab}
           options={{headerShown: false}}
         />
+        <Stack.Screen name="AddContact" component={AddContact} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -73,13 +79,18 @@ export const NavigationSigned = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
-          name="Home"
+          name="Homes"
           component={SignedBottomTab}
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="ContactDetail"
+          name="ContactDetails"
           component={ContactDetail}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="AddContact"
+          component={AddContact}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

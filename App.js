@@ -4,10 +4,9 @@ import Authentication from './app/authentication/authentication';
 
 const App = () => {
   return (
-    <View style={{flex: 1}}>
-    {/* <Text style={{color: 'red '}}>Mudfsdf</Text> */}
+    <>
       <Authentication />
-    </View>
+    </>
   );
 };
 
